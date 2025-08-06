@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Birthday Puzzle for Kitty 💙</title>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      background: linear-gradient(135deg, #e0f7ff, #ffffff);
+      color: #03324d;
+      height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1.2rem;
+    }
+
+    section {
+      display: none;
+    }
+
+    section.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    input, button {
+      padding: 0.7rem 1.2rem;
+      font-size: 1rem;
+      margin-top: 1rem;
+      border-radius: 8px;
+      border: 1px solid #bcd6e4;
+    }
+
+    input {
+      background: #f0faff;
+    }
+
+    button {
+      background-color: #46a0d9;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #2e8ac0;
+      transform: scale(1.05);
+    }
+
+    .hidden-gift {
+      width: 50px;
+      height: 50px;
+      background-image: url('https://cdn-icons-png.flaticon.com/512/716/716784.png');
+      background-size: cover;
+      position: absolute;
+      right: 30px;
+      bottom: 30px;
+      cursor: pointer;
+      opacity: 0.5;
+      z-index: 20;
+    }
+
+    .final-message {
+      display: none;
+      padding: 3rem 1rem;
+      font-size: 1.4rem;
+      font-weight: 600;
+      animation: fadeIn 2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0 }
+      to { opacity: 1 }
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* 🎈 Balloon & 💖 Heart Animation */
+    .float {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      z-index: 1;
+      animation: float 6s linear infinite;
+      opacity: 0.8;
+    }
+
+    .heart {
+      background-image: url('https://cdn-icons-png.flaticon.com/512/833/833472.png');
+      background-size: cover;
+    }
+
+    .balloon {
+      background-image: url('https://cdn-icons-png.flaticon.com/512/3677/3677319.png');
+      background-size: cover;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) scale(0.8);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-120vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    .float:nth-child(odd) {
+    animation-duration: 5s;
+    animation-delay: calc(var(--i, 0) * 1s);
+    }
+
+    .float:nth-child(even) {
+    animation-duration: 6s;
+    animation-delay: calc(var(--i, 0) * 1s);
+    }
+    /* 📱 Responsive Layout for Small Screens */
+    @media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    p {
+        font-size: 1rem;
+        padding: 0 1rem;
+    }
+
+    input, button {
+        width: 90%;
+        max-width: 300px;
+        font-size: 1rem;
+    }
+
+    .container {
+        padding: 1.5rem 1rem;
+    }
+
+    .hidden-gift {
+        width: 40px;
+        height: 40px;
+        right: 20px;
+        bottom: 20px;
+    }
+
+    .final-message {
+        font-size: 1.1rem;
+        padding: 2rem 1rem;
+    }
+
+    .float {
+        width: 30px;
+        height: 30px;
+    }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- 🎈 Background Floating Hearts & Balloons -->
+  <div class="float heart" style="left: 10%; animation-delay: 0s;"></div>
+  <div class="float balloon" style="left: 20%; animation-delay: 2s;"></div>
+  <div class="float heart" style="left: 30%; animation-delay: 4s;"></div>
+  <div class="float balloon" style="left: 50%; animation-delay: 1s;"></div>
+  <div class="float heart" style="left: 70%; animation-delay: 3s;"></div>
+  <div class="float balloon" style="left: 85%; animation-delay: 5s;"></div>
+
+  <!-- 🎁 Main Content -->
+  <div class="container">
+    <header id="intro">
+      <h1>Hey Kitty 💙</h1>
+      <p>Let’s play a little puzzle game. Your surprises are waiting!</p>
+      <button onclick="startGame()">Start</button>
+    </header>
+
+    <section id="puzzle1">
+      <h2>🔒 Puzzle 1</h2>
+      <p>What year did we first meet?</p>
+      <input type="text" id="q1" placeholder="For Example, 2021" />
+      <br/>
+      <button onclick="checkAnswer1()">Submit</button>
+    </section>
+
+    <section id="puzzle2">
+      <h2>💖 Puzzle 2</h2>
+      <p>Which of these words describes you best?</p>
+      <div>
+        <button onclick="checkAnswer2(this)">Loud</button>
+        <button onclick="checkAnswer2(this)">Careless</button>
+        <button onclick="checkAnswer2(this)">Genuine</button>
+        <button onclick="checkAnswer2(this)">Random</button>
+      </div>
+    </section>
+
+    <section id="puzzle3">
+      <h2>🎁 Puzzle 3</h2>
+      <p>Can you find the hidden gift on the page?</p>
+    </section>
+
+    <div class="hidden-gift" onclick="revealFinal()"></div>
+
+        <section class="final-message" id="finalMessage">
+    <h2>🎉 Happy Birthday, Kitty! 🎉</h2>
+    <p>
+        Thank you for always being by my side — through thick and thin, through chaos and calm. <br><br>
+        You've been my comfort in silence, my laughter in chaos, and my strength when I needed it most. <br><br>
+        You’ve helped me through the darkest moments without ever asking for anything in return. <br><br>
+        Just by being you, you've made life softer, lighter, and worth celebrating. <br><br>
+        I hope today brings you even a fraction of the warmth and kindness you've given me. <br><br>
+        <strong>Never stop being the beautiful soul you are. 💙</strong>
+    </p>
+</section>
+
+  </div>
+
+  <audio autoplay loop>
+    <source src="https://cdn.pixabay.com/audio/2023/03/13/audio_f51ef4f3e7.mp3" type="audio/mpeg">
+  </audio>
+
+  <canvas id="confetti"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script>
+    function startGame() {
+      document.getElementById('intro').style.display = 'none';
+      document.getElementById('puzzle1').classList.add('active');
+    }
+
+    function checkAnswer1() {
+      const input = document.getElementById('q1').value.trim();
+      if (input === "2023") { 
+        document.getElementById('puzzle1').classList.remove('active');
+        document.getElementById('puzzle2').classList.add('active');
+      } else {
+        alert("Hmm, try again. Think about the year we connected.");
+      }
+    }
+
+    function checkAnswer2(button) {
+      if (button.innerText === "Genuine") {
+        document.getElementById('puzzle2').classList.remove('active');
+        document.getElementById('puzzle3').classList.add('active');
+      } else {
+        alert("Nope... that's not quite you :)");
+      }
+    }
+
+    function revealFinal() {
+      document.getElementById('puzzle3').classList.remove('active');
+      document.getElementById('finalMessage').style.display = 'block';
+      launchConfetti();
+    }
+
+    function launchConfetti() {
+      confetti({
+        particleCount: 180,
+        spread: 120,
+        origin: { y: 0.6 }
+      });
+    }
+  </script>
+</body>
+</html>
